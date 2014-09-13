@@ -2,12 +2,20 @@
 
 class BlockrAPI {
 
+    private $_coin;
+    private $_validCoins = array('btc', 'tbtc', 'ltc', 'dgc', 'qrk', 'ppc', 'mec');
+
     public function __construct($coin = "btc") {
         $this->_coin = $coin;
     }
 
     public function setCoin($coin) {
-        $this->_coin = $coin;
+        $coin = strtolower($coin);
+        if(in_array($coin, $this->_validCoins)) {
+            $this->_coin = $coin;
+            return true;
+        }
+        return false;
     }
 
     public function coinInfo() {
@@ -81,6 +89,8 @@ class BlockrAPI {
         curl_setopt($curl, CURLOPT_URL, 'http://' . $this->_coin . '.blockr.io/api/v1' . $action);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        echo PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . 'http://' . $this->_coin . '.blockr.io/api/v1' . $action . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL;
 
         $json = curl_exec($curl);
         if($json === false) {
